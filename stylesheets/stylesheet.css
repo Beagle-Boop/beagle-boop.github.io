@@ -50,6 +50,10 @@ body {
     display: block;
 }
 
+p {
+    margin: 10px;
+}
+
 .dropdown-content a:hover {background-color: #f1f1f1}
 
 .dropdown:hover .dropdown-content {

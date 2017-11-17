@@ -1,12 +1,10 @@
-var DATAURL = "https://beagle-boop.firebaseio.com/boards/";
-var BOARDURL = "https://beagle-boop.firebaseio.com/boards.json";
+var DATAURL = "https://ex10-470.firebaseio.com/boards/";
+var BOARDURL = "https://ex10-470.firebaseio.com/boards.json";
 var boardData;
 var currentBoard = "none";
 var multiplayerBoard = "none"
 
-var UPDATEURL_START = "https://beagle-boop.firebaseio.com/boards/";
-var UPDATEURL_ALERT = "/alert.json";
-var UPDATEURL_SEED = "/seed.json";
+var UPDATEURL_START = "https://ex10-470.firebaseio.com/boards/";
 
 var UPDATEURL_LIVES = "lives";
 var UPDATEURL_TIMETOANSWER = "timeToAnswer";
@@ -24,12 +22,9 @@ $(document).ready(function () {
     })
         .done(function (data) {
             boardData = data;
-            console.log("Data: ", boardData);
 
             for (board in boardData) {
-                console.log(board)
 
-                console.log(boardData[board])
                 var item = $('#hiddenLink').clone();
                 item.attr("id", "boardItem")
                 item.attr("onclick", 'selectBoard("' + board + '")');
@@ -43,18 +38,12 @@ $(document).ready(function () {
                 $('#multiplayerDropdown').append(item2);
             }
 
-            console.log("Done.");
         })
 
     $('#updateButton').click(function () {
-        var id = $(this).attr('id');
-
-        var d = new Date();
-        // var currentUnixTime = d.getTime();
-        var seed = d.getTime().toString();
-        putData(seed, currentBoard);
+        putData(currentBoard);
         if (multiplayerBoard != "none") {
-            putData(seed, multiplayerBoard);
+            putData(multiplayerBoard);
         }
 
     });
@@ -70,41 +59,20 @@ $(document).ready(function () {
                     $("#currentTimeToAnswer").text(boardData[currentBoard].timeToAnswer);
                     $("#currentLives").text(boardData[currentBoard].lives);
                 }
-
             })
-
     }
     timeInterval = setInterval(updateUI, 1000);
 
 });
 
-function putData(seed, board) {
+function putData(board) {
     for (i in UPDATE_URL_END) {
-        console.log("end: " + UPDATE_URL_END[i])
         $.ajax({
             method: "PUT",
             url: DATAURL + board + "/" + UPDATE_URL_END[i] + ".json",
             data: $("#" + UPDATE_URL_END[i]).val().toString()
-        }).done(function (data) {
-            console.log(UPDATE_URL_END[i] + ' updated')
         })
     }
-
-    $.ajax({
-        method: "PUT",
-        url: DATAURL + board + UPDATEURL_SEED,
-        data: seed
-    }).done(function (data) {
-        console.log('Seed updated')
-    })
-
-    $.ajax({
-        method: "PUT",
-        url: DATAURL + board + UPDATEURL_ALERT,
-        data: "true"
-    }).done(function (data) {
-        console.log('Alert updated')
-    })
 }
 
 function selectMultiplayerBoard(boardName) {
@@ -133,9 +101,7 @@ function selectBoard(boardName) {
     $("#lives").val(boardData[boardName].lives);
     $("#currentTimeToAnswer").text(boardData[boardName].timeToAnswer);
     $("#currentLives").text(boardData[boardName].lives);
-
     $("#multiplayer-btn").show();
-
     $("#boardForm").show();
 }
 
